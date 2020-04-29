@@ -2,7 +2,7 @@ const path = require('path')
 
 const resolve = dir => path.join(__dirname, dir)
 
-const BASE_URL = process.env.NODE_ENV === 'production' ? '/abc' : '/'
+const BASE_URL = process.env.NODE_ENV === 'production' ? '/vueui' : '/'
 
 module.exports = {
   lintOnSave: false,
