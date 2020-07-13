@@ -55,7 +55,7 @@ export default {
                  {
                     title: '标签4',
                     name: '标签4的内容',
-               
+            
                 }
                 // ,
                 //  {
@@ -134,6 +134,16 @@ export default {
         //     })
             
         // },3000)
+                
+                this.$nextTick(()=>{
+                    if(sessionStorage.getItem('isfresh')) return
+
+                   
+
+                    sessionStorage.setItem('isfresh', true)
+                    location.reload()
+                    
+                })
     }
 }
 </script>

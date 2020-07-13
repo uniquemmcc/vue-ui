@@ -2,16 +2,17 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VistualView from '../views/VistualView.vue'
 
+
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/vistualView',
     name: 'vistualView',
     component: VistualView
   },
   {
-    path: '/tabView',
+    path: '/',
     name: 'tabView',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route

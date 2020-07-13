@@ -94,6 +94,7 @@ export default {
 
   user-select: none;
   padding: 5px 10px;
+  box-sizing: border-box;
   //  flex: 1; 
     
 //   &-active {

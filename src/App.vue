@@ -1,8 +1,9 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">虚拟列表</router-link> |
-      <router-link to="/tabView">tab组件</router-link> |
+      <router-link to="/">tab组件</router-link> |
+      <router-link to="/vistualView">虚拟列表</router-link> |
+      
       <router-link to="/dialogView">dialog组件</router-link> |
       <router-link to="/reView">递归组件</router-link>
     </div>
