@@ -15,7 +15,7 @@
 </template>
 
 <style lang="less">
-@import  '~@/assets/icon-font.css';
+@import  '~@/assets/iconfont/iconfont.css';
 
 *{
       margin: 0;
@@ -27,7 +27,7 @@
   -moz-osx-font-smoothing: grayscale;
  
   color: #2c3e50;
-  margin: 0px 20px ;
+  margin: 0px 50px ;
 }
 
 #nav {

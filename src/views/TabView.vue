@@ -1,8 +1,8 @@
 <template>
     <div class="tabs-view">
 
-            <p>pc端可滑动</p>
-            <button @click="handleAdd" > 增加</button>
+            <p style="margin-bottom:20px;">匀速滑动，加速滑动，增加， 删除</p>
+            <button @click="handleAdd" style="margin-bottom:20px;"> 增加</button>
  
            <!-- <div style="border: 1px solid red"> -->
                 <tabs v-model="idx" ref="tabsvv" class="tabs-view-tabs" v-show="idx">
@@ -52,17 +52,44 @@ export default {
                     name: '标签3的内容',
             
                 },
-                //  {
-                //     title: '标签4',
-                //     name: '标签4的内容',
+                 {
+                    title: '标签4',
+                    name: '标签4的内容',
             
-                // }
-                // ,
-                //  {
-                //     title: 'eeeee',
-                //     name: 'e7',
-                //     age: 20,
-                // }
+                }
+                ,
+                 {
+                    title: '标签5',
+                    name: '标签5的内容',
+            
+                },
+                 {
+                    title: '标签6',
+                    name: '标签6的内容',
+            
+                },
+                     {
+                    title: '标签7',
+                    name: '标签7的内容',
+            
+                },
+                {
+                    title: '标签8',
+                    name: '标签8的内容',
+            
+                },
+                 {
+                    title: '标签9',
+                    name: '标签9的内容',
+            
+                }
+                ,
+                 {
+                    title: '标签10',
+                    name: '标签10的内容',
+            
+                },
+                 
             ],
             idx: '标签1',
             myvalue: '',
@@ -118,10 +145,10 @@ export default {
         renderFuccc(h, data){
 
             return (
-                <div>
-                    {data.name}
+                <div style="display:flex;">
+                    <span style="padding:5px;">{data.name}</span>
                    
-                    <span class="iconfont  icon-close" style="margin-left:10px;cursor: pointer;"  on-click={this.remove.bind(this,data.index)} ></span>
+                    <span class="iconfont  icon-close" style="margin-left:10px;cursor: pointer;font-size:20px;padding:5px;"  on-click={this.remove.bind(this,data.index)} ></span>
                 </div>
             )
         }
@@ -135,15 +162,15 @@ export default {
             
         // },3000)
                 
-                this.$nextTick(()=>{
-                    if(sessionStorage.getItem('isfresh')) return
+                // this.$nextTick(()=>{
+                //     if(sessionStorage.getItem('isfresh')) return
 
                    
 
-                    sessionStorage.setItem('isfresh', true)
-                    location.reload()
+                //     sessionStorage.setItem('isfresh', true)
+                //     location.reload()
                     
-                })
+                // })
     }
 }
 </script>
@@ -153,7 +180,7 @@ export default {
     
     &-tabs{
         // margin-left: 20px;
-        width: 350px;
+        width: 100%;
         height: 400px;
         
     }

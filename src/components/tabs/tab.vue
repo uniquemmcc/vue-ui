@@ -43,13 +43,16 @@ export default {
     // console.log(111)
     // console.log(this.theKey)
     this.$nextTick(()=>{
-         const obj = {
-      key: this.index,
-      vcom:this,
-      offsetWidth:this.$el.offsetWidth
-    }
- 
-    this.tabsRoot.list.push(obj)
+        setTimeout(() => {
+            const obj = {
+              key: this.index,
+              vcom:this,
+              offsetWidth:this.$el.offsetWidth
+            }
+  
+            this.tabsRoot.list.push(obj)  
+        }, 0);
+        
 
       // console.log(this.tabsRoot.list)
     })
@@ -90,11 +93,13 @@ export default {
 <style lang="less">
 .tab {
   list-style: none;
-  float: left;
+  // float: left;
+  flex-shrink: 0;
 
   user-select: none;
   padding: 5px 10px;
   box-sizing: border-box;
+
   //  flex: 1; 
     
 //   &-active {

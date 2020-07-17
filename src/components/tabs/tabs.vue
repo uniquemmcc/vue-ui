@@ -45,8 +45,15 @@ export default {
       ox:0,
       initx: 0,
       isMove: false,
-      outerWidth:0
-      // ulWidth:0
+
+      oldTime: 0,
+      isLeft: false,
+      isaAmin: false,
+
+      theW: 20,    //.box 的padding + ul的margin   左边30 + 右边30  
+
+      canleft: false,
+      canright: true
     };
   },
   components: {
@@ -77,7 +84,34 @@ export default {
       // }
 
       // console.log('this.value:'+this.value)
+    },
+    ulWidth(newV,oldV){
+      
+      if(parseInt(newV)>this.$refs.ulBox.offsetWidth){
+          
+          this.theW = 80
+      }else{
+        this.theW=20
+      }
+    },
+    tx(newV,oldV){
+      
+      
+      if(newV===0){
+        this.canleft = false
+      }else{
+        this.canleft = true
+      }
+      if(newV === this.outerWidth - parseInt( this.ulWidth )-this.theW){
+        this.canright = false
+      }else{
+        this.canright = true
+      }
+
+  
+
     }
+ 
     
   },
   mounted() {
@@ -203,18 +237,25 @@ export default {
     setUlPosition(index,oldi){
       //在最前面删除，需要确保移动回最前，在超过容器的情况且要确保不能拖拽超出范围
       // console.log(index,oldi)
-      if(this.$refs.outer.offsetWidth-20 > this.$refs.ul.offsetWidth){
+      if( this.outerWidth - this.theW > parseInt( this.ulWidth ) ){
         this.tx = this.ox = 0 
+
+     
       }else{
 
-        if(this.tx < this.$refs.outer.offsetWidth-this.$refs.ul.offsetWidth-20)
-        this.tx = this.ox = this.$refs.outer.offsetWidth-this.$refs.ul.offsetWidth-20
+        if( this.tx < this.outerWidth - parseInt( this.ulWidth ) - this.theW )
+        this.tx = this.ox = this.outerWidth - parseInt( this.ulWidth ) - this.theW
+
       }
+    
       // else{
 
       // }
     },
     mousedown(e){
+this.isaAmin = false
+
+
   // event.stopImmediatePropagation();
       document.addEventListener('mousemove',this.mousemove)
       document.addEventListener('mouseup',this.mouseup)
@@ -222,34 +263,48 @@ export default {
       document.addEventListener('touchend',this.mouseup)
 
       let x
-      if(!e.touches) {  //兼容移动端
+      if(!e.changedTouches) {  //pc端
           x = e.pageX;
-      } else {   //兼容PC端
-          x = e.touches[0].clientX;
+      } else {   //移动端
+          //x = e.touches[0].clientX;
+          x= e.changedTouches[0].clientX;
       }
 
       this.initx = x
       this.canMove = true
-  
+
+
+      this.oldTime = Date.now()
+      
     },
     mousemove(e){
+
       
       if(!this.canMove)return
 
+      
+
       let x
-      if(!e.touches) {  //兼容移动端
+      if(!e.changedTouches) {  //pc端
           x = e.pageX;
-      } else {   //兼容PC端
-          x = e.touches[0].clientX;
+      } else {   //移动端
+          //x = e.touches[0].clientX;
+          x= e.changedTouches[0].clientX;
       }
       
-      // console.log("can",this.$refs.outer.offsetWidth-20,this.$refs.ul.offsetWidth)
-      if(this.$refs.outer.offsetWidth-20 > this.$refs.ul.offsetWidth){
+      // console.log("can",this.$refs.outer.offsetWidth-this.theW,parseInt( this.ulWidth ))
+      if( this.outerWidth - this.theW > parseInt( this.ulWidth )){
         return
       }
-      // console.log(this.$refs.outer.offsetWidth-20,this.$refs.ul.offsetWidth)
-      if(this.$refs.outer.offsetWidth-20 > this.$refs.ul.offsetWidth){
+      // console.log(this.$refs.outer.offsetWidth-this.theW,parseInt( this.ulWidth ))
+      if( this.outerWidth - this.theW > parseInt( this.ulWidth )){
         return
+      }
+
+      if(x>= this.initx){
+        this.isLeft= false
+      }else{
+        this.isLeft = true
       }
 
       this.tx = x - this.initx + this.ox
@@ -257,14 +312,15 @@ export default {
         this.tx=0
       }
     
-      if( this.tx < this.$refs.outer.offsetWidth-this.$refs.ul.offsetWidth-20 ){
-        this.tx= this.$refs.outer.offsetWidth-this.$refs.ul.offsetWidth-20
+      if( this.tx < this.outerWidth - parseInt( this.ulWidth )-this.theW ){
+        this.tx= this.outerWidth - parseInt( this.ulWidth )-this.theW
       }
 
 
       // console.log('outer',this.$refs.outer)
 
 
+    
       
      
       // this.offset=event.pageX - 
@@ -274,10 +330,11 @@ export default {
 
       
       let x
-      if(!e.touches) {  //兼容移动端
+      if(!e.changedTouches) {  //pc端
           x = e.pageX;
-      } else {   //兼容PC端
-          // x = e.touches[0].clientX;
+      } else {   //移动端
+          //x = e.touches[0].clientX;
+          x= e.changedTouches[0].clientX;
       }
 
 
@@ -292,7 +349,12 @@ this.isMove=true
 
 
 
-      this.ox = this.tx
+      //加速度
+       this.a()
+  
+
+
+      this.ox = this.tx     //保存最后停留的位置， 下一次滑动就在这一基础上
       this.canMove = false
       
 
@@ -305,8 +367,68 @@ this.isMove=true
 
      
     }
-    ,aaaa(){
-      this.tx++
+    ,a(){
+      
+          
+         //防止 一开始 不超过父容器，所以不让滑动 
+        if( this.outerWidth - this.theW > parseInt( this.ulWidth )){
+          return
+        }
+
+
+    
+      if(this.isMove){    
+   
+        let time = Date.now()-this.oldTime
+        if( time<=150 ){
+
+          this.isaAmin = true
+        
+ 
+
+              let fudu = 0
+
+            if(time<=80){
+                fudu = 1200
+              }else if(time<=150){
+                fudu = 600
+              }else if(time<=300){
+                fudu = 300
+              }
+              // console.log(fudu)
+
+              if(this.isLeft){
+                this.tx= this.tx - fudu
+              }else{
+                this.tx= this.tx + fudu
+              }
+              
+        
+              if(this.tx>0){
+                this.tx=0
+              }
+            
+              if( this.tx < this.outerWidth - parseInt( this.ulWidth )-this.theW ){
+                this.tx= this.outerWidth - parseInt( this.ulWidth )-this.theW
+              }
+
+              // this.isaAmin = false
+
+        }
+      }     
+    },
+    handleLeft(){
+     
+      if(!this.canleft)return
+
+      this.tx=this.ox = 0
+    },
+    handleRight(){
+      if(!this.canright)return
+  
+
+      this.tx = this.ox = this.outerWidth - parseInt( this.ulWidth )-this.theW
+      
     }
   },
   computed: {
@@ -319,8 +441,8 @@ this.isMove=true
       return `${this.height}px`;
     },
     barWidth() {
-      if (!this.list.length&&!this.list[this.getIndexFor(this.value)]) {return `auto`; console.log('kong-------------')}
-        console.log(this.list)
+      if (!this.list.length&&!this.list[this.getIndexFor(this.value)]) {return `auto`; }
+        // console.log(this.list)
 
       const offsetWidth = this.list[this.getIndexFor(this.value)].offsetWidth;
 
@@ -340,8 +462,15 @@ this.isMove=true
         // console.log(width)
         })
       
-      return `${width+5}px`
+  
+      return `${width}px`
+    },
+    outerWidth(){
+     
+      return this.$refs.outer.offsetWidth
     }
+
+    
   },
   render() {
 //     console.log(this.$children);
@@ -372,23 +501,33 @@ this.isMove=true
       }
     });
 
+//  <div  ref="ulBox" style="overflow:hidden;"   >
     return (
         <div class="box" ref="outer">  
+
             <div class="tabs">
-            
-            
-                <ul class="clearfix tabs-content"  ref="ul" id="ulul" style={{width:this.ulWidth,transform:this.transform}} >
-                  <div
-                    class="tabs-active-bar"
-                    style={{
-                      transform: this.barAnmi,
-                      width: this.barWidth,
-                      background: this.barColor
-                    }}
-                  ></div>
-                  {this.$slots.default}
-                </ul>
-                
+
+
+
+                  <div style="position: relative;">
+            { this.theW=== 80 ? <span  class={['iconfont' ,'icon-left', 'tabs-left', this.canleft ?'':'tabs-notleft' ] }  on-click={this.handleLeft}></span> : ''}
+            { this.theW=== 80 ? <span class={['iconfont', 'icon-right', 'tabs-right', this.canright ?'':'tabs-notright' ] }   on-click={this.handleRight}></span> : ''}
+                  <div  ref="ulBox" class={ this.theW === 80 ? 'theW': '' } style="overflow:hidden;margin-bottom:10px;"   >
+                  <ul class={ ['tabs-content',this.isaAmin?'a-anim':'']}   ref="ul" id="ulul" style={{width:this.ulWidth,transform:this.transform}} >
+                    <div
+                      class="tabs-active-bar"
+                      style={{
+                        transform: this.barAnmi,
+                        width: this.barWidth,
+                        background: this.barColor,
+                        
+                      }}
+                    ></div>
+                    {this.$slots.default}
+                  </ul>
+                  </div>
+                  </div>
+
                 <div class="tabs-container">
                   {this.obj}
                 </div>
@@ -412,35 +551,78 @@ this.isMove=true
 </script>
 <style lang="less">
 .box{
-  //  width: 350px;
-  //       height: 400px;
+
           border-radius: 5px;
   border: 1px solid #ccc;
   box-shadow: 1px 1px 1px #ccc;
         padding: 10px;
         box-sizing: border-box;
+        
 }
 .tabs {
 
-  // margin: 10px;
+ 
   box-sizing: border-box;
   display:flex;
   flex-direction:column;
   height: 100%;
-  overflow: hidden;
+  
+
+
+
+  &-left {
+    position:absolute;
+    left:0px;
+    top:5px;
+    font-size:20px;
+     line-height:20px;
+    padding: 5px;
+    color: #000;
+    cursor: pointer;
+  }
+ 
+  &-right {
+    position:absolute;
+    right:0px;
+    top:5px;
+    font-size:20px; 
+    line-height:20px;
+    padding: 5px;
+    color: #000;
+    cursor: pointer;
+   
+  }
+   &-notleft {
+    cursor:not-allowed!important;
+    color: #ddd!important;
+
+  }
+  
+   &-notright {
+    cursor:not-allowed!important;
+    color: #ddd!important;
+
+  }
+
  
   &-content {
-    position: relative;
+
+     
+    display: flex;
 
     box-sizing: border-box;
-    margin: 0;
+    // margin: 0 20px 10px 20px;
     padding: 0;
-    margin-bottom: 10px;
     
+    
+    
+
     // width: 368px;  //需要计算
     // transform: translate(50px,0px)
 
     user-select: none;
+
+    
   }
   &-container {
     box-sizing: border-box;
@@ -463,6 +645,13 @@ this.isMove=true
   }
 }
 
+.a-anim{
+  transition: 0.1s ease-in-out;
+}
+
+.theW{
+  margin: 0px 30px 10px 30px;
+}
 
 .clearfix:after {
   content: "";

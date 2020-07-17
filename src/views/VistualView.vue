@@ -20,7 +20,7 @@
 
         </vistual-list>
 
-        <div>
+        <div style="margin-top:20px;">
             <input type="number"  :value="myindex" @input="handleInput" > 页
         </div>
 
