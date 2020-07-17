@@ -9,13 +9,22 @@ export default {
     props:{
         title: {
             type: String,
-            default: ''
+            default: 'title'
+        },
+        width: {
+            type: Number,
+            default: 300
+        },
+        height: {
+             type: Number,
+            default: 300
         }
+
     },
     render(h){
 
         return (
-            <div class="dialog" ref="outer" style={{width:this.width, height: this.height, transform: this.transform}} >
+            <div class="dialog" ref="outer" style={{width:this.dialogWidth, height: this.dialogHeight, left: this.left,top: this.top}} >
        
                 <div class="dialog-title" on-mousedown={this.mousedown_t} on-touchstart={this.mousedown_t}>
                     <p>{this.title}</p>
@@ -32,38 +41,65 @@ export default {
     },
     data(){
         return{
+            windowW:0,
+            windowH:0,
             canMove: false,
-            offsetR:300,
-            offsetB:200,
-            offsetL:-150,
-            offsetT:-100,
+            offsetR:0,   //窗口大小 
+            offsetB:0,
+
             initR: 0,
             initB: 0,
-            ol:-150,
-            ot: -100,
+            offsetL:0,  
+            offsetT:0,
+            ol:0,
+            ot:0,
             jsxObj:null
         }
     },
     computed:{
-        width(){
+        dialogWidth(){
             return `${this.offsetR}px`
         },
-        height(){
+        dialogHeight(){
             return `${this.offsetB}px`
         },
         transform(){
             return `translate(${this.offsetL}px,${this.offsetT}px)`
-        }
-        // left(){
-        //     return `${this.offsetL}px`
-        // },
-        // top(){
-        //     return `${this.offsetT}px`
-        // }
+        },
 
+        left(){
+            return `${this.offsetL}px`
+        },
+        top(){
+            return `${this.offsetT}px`
+        }
+       
+       
     },
-  
+    created(){
+        this.offsetR = this.width
+        this.offsetB = this.height
+    },
+    mounted(){
+
+       this.init()
+        
+    },
     methods: {
+        init(){
+            this.$nextTick(()=>{
+
+                    this.windowW = document.body.offsetWidth 
+                    this.windowH = document.body.offsetHeight
+
+                    //center
+                    let w = this.$el.offsetWidth
+                    let h = this.$el.offsetHeight
+                    this.offsetL = this.ol = this.windowW/2 - w/2
+                    this.offsetT = this.ot = this.windowH/2 - h/2
+            })
+
+        },
 
        renderFuc(h){
          
@@ -95,10 +131,10 @@ export default {
 
 
             let x
-            if(!e.touches) {  //兼容移动端
+            if(!e.changedTouches) {  //pc端
                 x = e.pageX;
-            } else {   //兼容PC端
-                x = e.touches[0].clientX;
+            } else {   //移动端
+                x = e.changedTouches[0].clientX;
             }
 
             this.initR= outer.left + outer.width - x
@@ -113,13 +149,20 @@ export default {
 
 
             let x
-            if(!e.touches) {  //兼容移动端
+            if(!e.changedTouches) {  //pc端
                 x = e.pageX;
-            } else {   //兼容PC端
-                x = e.touches[0].clientX;
+            } else {   //移动端
+                x = e.changedTouches[0].clientX;
             }
 
             this. offsetR = x - outer.left + this.initR
+
+            
+            if(this.offsetR + outer.left>=this.windowW){
+                this.offsetR = this.windowW - outer.left
+            }
+
+           
             
         },
         mouseup_r(){
@@ -143,10 +186,10 @@ export default {
             const outer = this.$refs.outer.getBoundingClientRect()
 
             let y
-            if(!e.touches) {  //兼容移动端
+            if(!e.changedTouches) {  //pc端
                 y = e.pageY;
-            } else {   //兼容PC端
-                y = e.touches[0].clientY;
+            } else {   //移动端
+                y = e.changedTouches[0].clientY;
             }
 
             this.initB= outer.top + outer.height - y
@@ -159,13 +202,18 @@ export default {
             const outer = this.$refs.outer.getBoundingClientRect()
 
             let y
-            if(!e.touches) {  //兼容移动端
+            if(!e.changedTouches) {  //pc端
                 y = e.pageY;
-            } else {   //兼容PC端
-                y = e.touches[0].clientY;
+            } else {   //移动端
+                y = e.changedTouches[0].clientY;
             }
 
             this. offsetB = y - outer.top + this.initB
+
+            if(this.offsetB + outer.top>=this.windowH){
+                this.offsetB = this.windowH - outer.top
+            }
+            
             
         },
         mouseup_b(){
@@ -191,18 +239,21 @@ export default {
             const outer = this.$refs.outer.getBoundingClientRect()
 
             let x, y
-            if(!e.touches) {  //兼容移动端
+            if(!e.changedTouches) {  //pc端
                 x = e.pageX
                 y = e.pageY;
-            } else {   //兼容PC端
-                x = e.touches[0].clientX
-                y = e.touches[0].clientY;
+            } else {   //移动端
+                x = e.changedTouches[0].clientX
+                y = e.changedTouches[0].clientY;
             }
 
         
+            
     
             this.initR = x
             this.initB = y
+            
+
 
             this.canMove = true
         },
@@ -213,25 +264,39 @@ export default {
             if(!this.canMove)return
             const outer = this.$refs.outer.getBoundingClientRect()
            
+            
 
             let x, y
-            if(!e.touches) {  //兼容移动端
+            if(!e.changedTouches) {  //pc端
                 x = e.pageX
                 y = e.pageY;
-            } else {   //兼容PC端
+            } else {   //移动端
 
        
-                x = e.touches[0].clientX
-                y = e.touches[0].clientY;
+                x = e.changedTouches[0].clientX
+                y = e.changedTouches[0].clientY;
             }
 
      
 
-            this.offsetL = x - this.initR + this.ol
+
+            
+            this.offsetL = x -this.initR+this.ol
             this.offsetT = y - this.initB + this.ot
-            
-         
-            
+
+            if(this.offsetL<=0){
+                this.offsetL = 0
+            }
+            if(this.offsetT<=0){
+                this.offsetT = 0
+            }
+            if(this.offsetL + this.$el.offsetWidth>= this.windowW){
+                this.offsetL = this.windowW - this.$el.offsetWidth
+            }
+            if(this.offsetT + this.$el.offsetHeight>= this.windowH){
+                this.offsetT = this.windowH - this.$el.offsetHeight
+            }
+  
         },
         mouseup_t(){
             document.removeEventListener('mousemove',this.mousemove_t)
@@ -246,6 +311,7 @@ export default {
              this. ol= this.offsetL
             this. ot= this.offsetT
 
+
          
         }
         
@@ -257,16 +323,16 @@ export default {
     font-size: 16px;
     color: #000;
     background: #fff;
-    width: 300px;
-    height: 200px;
+    // width: 300px;
+    // height: 300px;
     border: 1px solid #ccc;
     border-radius: 2px;
     box-shadow: 1px 1px 1px  #ccc;
     box-sizing: border-box; 
     position: fixed;
-    left: 50%;
-    top: 50%;
-    // transform: translate(-150px,-100px);
+    // left: 50%;
+    // top: 50%;
+    // transform: translate(-50%,-50%);
     display: flex;
     flex-direction: column;
     padding: 3px;
@@ -328,7 +394,7 @@ export default {
         position: absolute;
         top: 0;
         right: 0;
-        z-index: 9999;
+        // z-index: 9999;
         cursor: w-resize;
         user-select: none;
     }
@@ -339,7 +405,7 @@ export default {
         position: absolute;
         left: 0;
         bottom: 0;
-        z-index: 9999;
+        // z-index: 9999;
         cursor: s-resize;
         user-select: none;
     }
@@ -351,7 +417,7 @@ export default {
         right: 0;
         bottom: 0;
         cursor: se-resize;
-        z-index: 10000;
+        z-index: 1;
         user-select: none;
     }
 }

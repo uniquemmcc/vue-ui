@@ -102,7 +102,7 @@ export default {
       }else{
         this.canleft = true
       }
-      if(newV === this.outerWidth - parseInt( this.ulWidth )-this.theW){
+      if(newV === this.$refs.outer.offsetWidth - parseInt( this.ulWidth )-this.theW){
         this.canright = false
       }else{
         this.canright = true
@@ -237,14 +237,14 @@ export default {
     setUlPosition(index,oldi){
       //在最前面删除，需要确保移动回最前，在超过容器的情况且要确保不能拖拽超出范围
       // console.log(index,oldi)
-      if( this.outerWidth - this.theW > parseInt( this.ulWidth ) ){
+      if( this.$refs.outer.offsetWidth - this.theW > parseInt( this.ulWidth ) ){
         this.tx = this.ox = 0 
 
      
       }else{
 
-        if( this.tx < this.outerWidth - parseInt( this.ulWidth ) - this.theW )
-        this.tx = this.ox = this.outerWidth - parseInt( this.ulWidth ) - this.theW
+        if( this.tx < this.$refs.outer.offsetWidth - parseInt( this.ulWidth ) - this.theW )
+        this.tx = this.ox = this.$refs.outer.offsetWidth - parseInt( this.ulWidth ) - this.theW
 
       }
     
@@ -293,11 +293,11 @@ this.isaAmin = false
       }
       
       // console.log("can",this.$refs.outer.offsetWidth-this.theW,parseInt( this.ulWidth ))
-      if( this.outerWidth - this.theW > parseInt( this.ulWidth )){
+      if( this.$refs.outer.offsetWidth - this.theW > parseInt( this.ulWidth )){
         return
       }
       // console.log(this.$refs.outer.offsetWidth-this.theW,parseInt( this.ulWidth ))
-      if( this.outerWidth - this.theW > parseInt( this.ulWidth )){
+      if( this.$refs.outer.offsetWidth - this.theW > parseInt( this.ulWidth )){
         return
       }
 
@@ -312,8 +312,8 @@ this.isaAmin = false
         this.tx=0
       }
     
-      if( this.tx < this.outerWidth - parseInt( this.ulWidth )-this.theW ){
-        this.tx= this.outerWidth - parseInt( this.ulWidth )-this.theW
+      if( this.tx < this.$refs.outer.offsetWidth - parseInt( this.ulWidth )-this.theW ){
+        this.tx= this.$refs.outer.offsetWidth - parseInt( this.ulWidth )-this.theW
       }
 
 
@@ -371,7 +371,7 @@ this.isMove=true
       
           
          //防止 一开始 不超过父容器，所以不让滑动 
-        if( this.outerWidth - this.theW > parseInt( this.ulWidth )){
+        if( this.$refs.outer.offsetWidth - this.theW > parseInt( this.ulWidth )){
           return
         }
 
@@ -408,8 +408,8 @@ this.isMove=true
                 this.tx=0
               }
             
-              if( this.tx < this.outerWidth - parseInt( this.ulWidth )-this.theW ){
-                this.tx= this.outerWidth - parseInt( this.ulWidth )-this.theW
+              if( this.tx < this.$refs.outer.offsetWidth - parseInt( this.ulWidth )-this.theW ){
+                this.tx= this.$refs.outer.offsetWidth - parseInt( this.ulWidth )-this.theW
               }
 
               // this.isaAmin = false
@@ -427,7 +427,7 @@ this.isMove=true
       if(!this.canright)return
   
 
-      this.tx = this.ox = this.outerWidth - parseInt( this.ulWidth )-this.theW
+      this.tx = this.ox = this.$refs.outer.offsetWidth - parseInt( this.ulWidth )-this.theW
       
     }
   },
@@ -464,11 +464,8 @@ this.isMove=true
       
   
       return `${width}px`
-    },
-    outerWidth(){
-     
-      return this.$refs.outer.offsetWidth
     }
+   
 
     
   },

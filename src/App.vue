@@ -21,13 +21,21 @@
       margin: 0;
     padding: 0;
 }
+html,body{
+  width: 100%;
+  height: 100%;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
  
   color: #2c3e50;
-  margin: 0px 50px ;
+  padding: 0px 50px ;
+  box-sizing: border-box;
+  user-select: none;
+   width: 100%;
+  height: 100%;
 }
 
 #nav {
