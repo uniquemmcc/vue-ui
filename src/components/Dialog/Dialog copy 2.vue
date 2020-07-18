@@ -19,10 +19,6 @@ export default {
              type: Number,
             default: 300
         },
-        renderFuc:{
-            type: Function,
-            default: ()=>{}
-        }
        
 
     },
@@ -93,7 +89,7 @@ export default {
     mounted(){
 
        this.init()
-      
+        console.log(this.zIndex)
     },
     methods: {
         init(){
@@ -111,8 +107,21 @@ export default {
 
         },
 
+       renderFuc(h){
+         
+         
+
+         let obj = this.jsxObj
+     
+        return (
+               obj||''
+           )
        
-      
+       },
+       setJsx(jsxObj){
+           this.jsxObj = jsxObj
+  
+       },
        handleClose(){
            this.$emit('close','')
        },
@@ -162,7 +171,7 @@ export default {
                 this.offsetR = this.windowW - outer.left
             }
 
-           if(this.offsetR<150)this.offsetR= 150
+           
             
         },
         mouseup_r(){
@@ -213,8 +222,6 @@ export default {
             if(this.offsetB + outer.top>=this.windowH){
                 this.offsetB = this.windowH - outer.top
             }
-
-            if(this.offsetB<150)this.offsetB= 150
             
             
         },
