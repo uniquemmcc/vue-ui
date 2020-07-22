@@ -1,7 +1,7 @@
 <template>
     <div class="dialog_view">
 
-        <p style="margin-bottom:20px;">函数式调用多个，可拖拽可放大缩小，自定义加载内容</p>
+        <p style="margin-bottom:20px;">函数式调用多个，可拖拽可放大缩小</p>
         <button @click="handleClick">dialog</button>
 
         

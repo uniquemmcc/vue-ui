@@ -1,7 +1,7 @@
 <template>
     <div class="tabs-view">
 
-            <p style="margin-bottom:20px;">匀速滑动，加速滑动，增加， 删除</p>
+            <p style="margin-bottom:20px;">流畅滑动，增加， 删除</p>
             <button @click="handleAdd" style="margin-bottom:20px;"> 增加</button>
  
            <!-- <div style="border: 1px solid red"> -->
